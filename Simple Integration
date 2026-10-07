@@ -10,14 +10,14 @@ plt.plot(x, y)
 plt.show()
 
 
-def integrate(xmin, xmax, n):
+def integrate(xmin, xmax, n, f):
     dx = (xmax - xmin) / n
     total_area = 0
     for i in range(n):
         x = xmin + i * dx
         total_area += f(x) * dx
     return total_area
-print("Numerical integration result:", integrate(-10, 10, 1000))    
+print("Numerical integration result:", integrate(-10, 10, 1000, f))    
 
 def integrate_analytical(xmin, xmax):
     max=10*np.sinh(7*xmax)/7 + np.exp(9*xmax)/9

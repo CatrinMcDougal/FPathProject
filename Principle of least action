@@ -1,0 +1,32 @@
+import numpy as np
+import cmath
+#Initial state
+tinit = 0
+xinit=0
+#Final state
+tfin=10
+xfin=10
+#Constants
+m=1
+hbar=1
+i=complex(0,1)
+
+def x(t):
+    return cos(t)
+def xdot(t):
+    return -sin(t)
+
+def V(x):
+    return 0.5 * x**2
+
+def L(x, xdot):
+    return 0.5*xdot**2 - V(x)
+#Need to define integral in terms of time 
+#S = integrate(tmin, tmax, 100, L)
+#print ("Action:", S)
+S=30
+def G(b,a):
+    pre = np.sqrt(m/(2*np.pi*hbar*(tfin-tinit)))
+    exp=np.exp(i/hbar * S)
+    return pre * exp
+print(G(tfin, tinit))
