@@ -1,0 +1,26 @@
+import numpy as np 
+import matplotlib.pyplot as plt
+
+def f(x):
+    return 10*np.cosh(7*x) + np.exp(9*x)
+
+x = np.linspace(-10, 10, 100)
+y = f(x)
+plt.plot(x, y)
+plt.show()
+
+
+def integrate(xmin, xmax, n):
+    dx = (xmax - xmin) / n
+    total_area = 0
+    for i in range(n):
+        x = xmin + i * dx
+        total_area += f(x) * dx
+    return total_area
+print("Numerical integration result:", integrate(-10, 10, 1000))    
+
+def integrate_analytical(xmin, xmax):
+    max=10*np.sinh(7*xmax)/7 + np.exp(9*xmax)/9
+    min=10*np.sinh(7*xmin)/7 + np.exp(9*xmin)/9
+    return (max - min)
+print("Analytical integration result:", integrate_analytical(-10, 10))
