@@ -1,5 +1,6 @@
 import numpy as np
-import cmath
+import cmath #Needed for complex numbers
+import random
 #Initial state
 tinit = 0
 xinit=0
@@ -9,24 +10,39 @@ xfin=10
 #Constants
 m=1
 hbar=1
-i=complex(0,1)
+# Set i as imaginry i
+complex=complex(0,1)
+#Number of trials
+n=10
 
-def x(t):
-    return cos(t)
-def xdot(t):
-    return -sin(t)
-
+#Define the potential
 def V(x):
-    return 0.5 * x**2
+    return 0
 
-def L(x, xdot):
-    return 0.5*xdot**2 - V(x)
-#Need to define integral in terms of time 
-#S = integrate(tmin, tmax, 100, L)
-#print ("Action:", S)
-S=30
-def G(b,a):
-    pre = np.sqrt(m/(2*np.pi*hbar*(tfin-tinit)))
-    exp=np.exp(i/hbar * S)
-    return pre * exp
-print(G(tfin, tinit))
+#Define numerical integration function
+def integrate(xmin, xmax, n, f):
+    dx = (xmax - xmin) / n
+    total_area = 0
+    for i in range(n):
+        x = xmin + i * dx
+        total_area += f(x) * dx
+    return total_area
+
+#Random locations of x to mirror the random route of the particle
+x=np.zeros(n+1)
+for i in range(n):
+    random.seed(i)
+    x[i+1] = random.random() *10
+print(x)
+# Find the action S for the path using no potential
+dt = (tfin-tinit)/n
+S=0
+for j in range (n):
+    s=(m/2*dt) * (x[j+1]-x[j])**2
+    S+=s
+print (S)
+
+#Calculate the weighting factor for the path
+weight = np.exp((complex*S)/hbar)
+#This uses numerical values of x, even if these are random, so when the integration is needed, this will not be possible for the different xn
+
