@@ -12,7 +12,7 @@ m=1
 hbar=1
 # Set i as imaginry i
 complex=complex(0,1)
-#Number of trials
+#Number of time steps
 n=10
 
 #Define the potential
@@ -28,21 +28,52 @@ def integrate(xmin, xmax, n, f):
         total_area += f(x) * dx
     return total_area
 
+TV=np.zeros(n+2)
+
+total=0
+
 #Random locations of x to mirror the random route of the particle
-x=np.zeros(n+1)
-for i in range(n):
-    random.seed(i)
-    x[i+1] = random.random() *10
-print(x)
-# Find the action S for the path using no potential
-dt = (tfin-tinit)/n
-S=0
-for j in range (n):
-    s=(m/2*dt) * (x[j+1]-x[j])**2
-    S+=s
-print (S)
+for N in range (10):
+    x=np.zeros(n+2)
+    for i in range(n):
+        x[i+1] = random.random() *10
+    x[-1]=xfin    
+    # Find the action S for the path using no potential
+    dt = (tfin-tinit)/n
+    #for j in range (n):
+        #s=(m/2*dt) * (x[j+1]-x[j])**2
+        #S+=s
+    #print (S)
 
-#Calculate the weighting factor for the path
-weight = np.exp((complex*S)/hbar)
-#This uses numerical values of x, even if these are random, so when the integration is needed, this will not be possible for the different xn
+    #Calculate the weighting factor for the path
 
+    def f(x):
+        for j in range(n+1):
+            TV[j]+=0.5*m*((x[j+1]-x[j])/dt)**2 - V(x[j+1])
+        return TV
+#Find the lagrangian for each part of the path and sum them to get the action S
+    def action (x):
+        dx = (xfin - xinit) / n
+        S = 0
+        for j in range(n):
+            S += f(x)[j] * dx
+        return S
+#Weighting for the path depends on the whole action of the path
+    def weight(x):
+        weight = 0
+        for j in range(n):
+            weight += np.exp((complex*action(x))/hbar)
+        return weight
+
+    #Integrate over all x values - sum many different paths
+    single_path_weight=weight(x)
+    total+=single_path_weight
+print ("Total weight of all paths: ", total)
+
+#To a constant factor, this is the probability, so to get probability amplitude find the absolute value squared of the total weight
+probability_amplitude = abs(total)**2
+print ("Probability amplitude: ", probability_amplitude)
+
+#This will simply increase with the number of trials! How does this help? The probability should not just increase continuosly, what do I need to divide by?
+
+    
